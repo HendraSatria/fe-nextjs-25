@@ -6,8 +6,8 @@ export default function Home() {
  
   return(
    <Layout>
-    <h1>Home</h1>
-    <h1>Button</h1>
+    <h1 className="font-bold text-black">Home</h1>
+   
    </Layout>
 
   );
