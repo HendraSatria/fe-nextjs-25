@@ -39,6 +39,15 @@ export default async function callAPI({
     },
   }).catch((err) => err.response);
 
+  if (!response) {
+    const res = {
+      error: true,
+      message: 'A generic error occurred',
+      data: null,
+    };
+    return res;
+  }
+
   if (response.status > 300) {
     const res = {
       error: true,
@@ -52,7 +61,7 @@ export default async function callAPI({
   const res = {
     error: false,
     message: 'success',
-    data: length > 1 ? response.data : response.data.data,
+    data: length > 2 ? response.data : response.data.data,
   };
 
   return res;
