@@ -1,9 +1,8 @@
-import React from 'react'
+'use client';
 
-function Button() {
-  return (
-    <div>Button</div>
-  )
+import React from 'react';
+import MuiButton, { ButtonProps } from '@mui/material/Button';
+
+export default function Button(props: ButtonProps) {
+  return <MuiButton {...props} />;
 }
-
-export default Button

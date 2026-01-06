@@ -1,11 +1,13 @@
-'use client';
+"use client";
 import React, { useEffect } from "react";
+import Button from "@/components/ui/Button";
 import Layout from "@/components/ui/Layout";
 import { service } from "@/services/services";
 import { DataGrid ,GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import Link from "next/link";
 
 
-
+  
 
 const rows: GridRowsProp = [
   { id: 1, name: 'Data Grid', description: 'the Community version' },
@@ -30,11 +32,19 @@ const columns: GridColDef[] = [
   }, []);
 
 
-  return <Layout><h1 className="font-bold text-black ">Product Category</h1>
-  
-      <div style={{ height: 300, width: '100%' }}>
-      <DataGrid rows={rows} columns={columns} />
-    </div>
-  </Layout>;
- 
+  return (
+    <Layout>
+      <div className="flex w-full justify-between items-center my-4">
+        <div className="flex items-center gap-2">
+          <h1 className="font-bold text-black">Product Category</h1>
+        </div>
+        <Link href="/product-category/create">
+        <Button variant="contained">TAMBAH DATA</Button>
+        </Link>
+      </div>
+      <div style={{ height: 400, width: '100%' }}>
+        <DataGrid rows={rows} columns={columns} />
+      </div>
+    </Layout>
+  );
 }
