@@ -7,7 +7,7 @@ import { DataGrid ,GridColDef, GridRowsProp } from '@mui/x-data-grid';
 import Link from "next/link";
 
 
-  
+
 
 const rows: GridRowsProp = [
   { id: 1, name: 'Data Grid', description: 'the Community version' },
