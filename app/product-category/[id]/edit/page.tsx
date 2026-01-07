@@ -1,48 +1,67 @@
 'use client';
 
 import Layout from '@/components/ui/Layout';
-import { serviceStore } from '@/services/services';
+import { serviceShow, serviceUpdate } from '@/services/services';
 import { Button, TextField } from '@mui/material';
-import { useRouter } from 'next/navigation'; // Correct import for App Router
-import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState, use } from 'react';
 import Swal from 'sweetalert2';
 
-export default function ProductCategoryCreate() {
+export default function ProductCategoryEdit({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
+  const { id } = use(params);
   const [loading, setLoading] = useState(false);
+  const [data, setData] = useState<any>(null);
+
+  useEffect(() => {
+    const fetchData = async () => {
+        try {
+            const response = await serviceShow('product_categories', id);
+            setData(response.data); 
+        } catch (error) {
+             Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'Failed to fetch data',
+            });
+            router.push('/product-category');
+        }
+    }
+    fetchData();
+  }, [id, router]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
 
     const formData = new FormData(e.currentTarget);
+    formData.append('_method', 'PUT'); 
 
     try {
-      const response = await serviceStore('product_categories', formData);
-      // Assuming response.status or similar checks can be done, 
-      // but service wrapper usually returns data.
-      // Adjust based on your actual service response structure.
+      await serviceUpdate('product_categories', formData, id);
       
       Swal.fire({
         icon: 'success',
         title: 'Success',
-        text: 'Product Category created successfully',
+        text: 'Product Category updated successfully',
       });
       router.push('/product-category');
     } catch (error: any) {
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: error?.response?.data?.message || 'Failed to create category',
+        text: error?.response?.data?.message || 'Failed to update category',
       });
     } finally {
       setLoading(false);
     }
   };
 
+  if (!data) return <Layout><div>Loading...</div></Layout>;
+
   return (
     <Layout>
-      <h1 className="text-black text-2xl font-bold">Create Product Category</h1>
+      <h1 className="text-black text-2xl font-bold">Edit Product Category</h1>
       <form onSubmit={handleSubmit} className="w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-4">
           <TextField 
@@ -50,19 +69,23 @@ export default function ProductCategoryCreate() {
             id="name" 
             label="Name" 
             variant="standard" 
+            defaultValue={data.name}
             required
             fullWidth
+            InputLabelProps={{ shrink: true }}
           />
           <TextField
             name="description"
             id="description"
             label="Description"
             variant="standard"
+            defaultValue={data.description}
             fullWidth
+            InputLabelProps={{ shrink: true }}
           />
         </div>
         <div className="flex justify-end gap-2">
-            <Button 
+           <Button 
             variant="outlined" 
             color="secondary"
             onClick={() => router.back()}
@@ -75,7 +98,7 @@ export default function ProductCategoryCreate() {
             variant="contained" 
             disabled={loading}
           >
-            {loading ? 'Saving...' : 'Submit'}
+            {loading ? 'Updating...' : 'Update'}
           </Button>
         </div>
       </form>

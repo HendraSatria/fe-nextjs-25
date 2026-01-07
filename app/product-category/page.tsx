@@ -2,11 +2,10 @@
 import React, { useEffect } from "react";
 import Button from "@/components/ui/Button";
 import Layout from "@/components/ui/Layout";
-import { service } from "@/services/services";
+import { service, serviceDestroy } from "@/services/services";
 import { DataGrid ,GridColDef, GridRowsProp } from '@mui/x-data-grid';
 import Link from "next/link";
-
-
+import Swal from 'sweetalert2';
 
 
 const rows: GridRowsProp = [
@@ -21,10 +20,66 @@ const columns: GridColDef[] = [
 ];
   export default function Page() {
     const [rows, setRows] = React.useState<GridRowsProp>([]);
+    const [loading, setLoading] = React.useState(true);
+    
+    // Define columns inside component to access reload/state if needed, or outside + actions
+    const columns: GridColDef[] = [
+      { field: 'name', headerName: 'Name', flex: 1 },
+      { field: 'description', headerName: 'Description', flex: 1 },
+      {
+        field: 'actions',
+        headerName: 'Actions',
+        width: 200,
+        renderCell: (params) => (
+          <div className="flex gap-2">
+            <Link href={`/product-category/${params.row.id}/edit`} className="flex items-center">
+              <Button variant="contained" color="primary" size="small">Edit</Button>
+            </Link>
+            <Button 
+              variant="contained" 
+              color="error" 
+              size="small"
+              onClick={() => handleDelete(params.row.id)}
+            >
+              Delete
+            </Button>
+          </div>
+        ),
+      },
+    ];
+
   const getData = async () => {
-    const response = await service('product_categories');
-    setRows(response.data);
-    return response;
+    setLoading(true);
+    try {
+        const response = await service('product_categories');
+        setRows(response.data);
+    } catch (error) {
+        console.error("Failed to fetch data", error);
+    } finally {
+        setLoading(false);
+    }
+  };
+  
+  const handleDelete = async (id: number) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await serviceDestroy('product_categories', id.toString());
+        Swal.fire('Deleted!', 'Category has been deleted.', 'success');
+        getData();
+      } catch (error) {
+        Swal.fire('Error', 'Failed to delete category', 'error');
+      }
+    }
   };
   
   useEffect(() => {
@@ -36,14 +91,19 @@ const columns: GridColDef[] = [
     <Layout>
       <div className="flex w-full justify-between items-center my-4">
         <div className="flex items-center gap-2">
-          <h1 className="font-bold text-black">Product Category</h1>
+          <h1 className="font-bold text-black text-2xl">Product Category</h1>
         </div>
         <Link href="/product-category/create">
         <Button variant="contained">TAMBAH DATA</Button>
         </Link>
       </div>
       <div style={{ height: 400, width: '100%' }}>
-        <DataGrid rows={rows} columns={columns} />
+        <DataGrid 
+            rows={rows} 
+            columns={columns} 
+            loading={loading}
+            getRowId={(row) => row.id}
+        />
       </div>
     </Layout>
   );

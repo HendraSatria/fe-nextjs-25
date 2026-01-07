@@ -41,16 +41,16 @@ export default function Navbar() {
                   Product-Category
                 </Link>
                 <Link
-                  href="/product"
+                  href="/products"
                   className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white"
                 >
-                  Product
+                  Products
                 </Link>
                 <Link
-                  href="/product-variant"
+                  href="/product-variants"
                   className="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-white/5 hover:text-white"
                 >
-                  Product-Variant
+                  Product Variants
                 </Link>
                 <Link
                   href="/calendar"

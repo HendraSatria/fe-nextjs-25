@@ -1,0 +1,106 @@
+'use client';
+
+import Layout from '@/components/ui/Layout';
+import { service, serviceDestroy } from '@/services/services';
+import { Button } from '@mui/material';
+import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+
+export default function ProductVariantList() {
+  const [rows, setRows] = useState<GridRowsProp>([]);
+  const [loading, setLoading] = useState(true);
+
+  const columns: GridColDef[] = [
+    { 
+      field: 'product', 
+      headerName: 'Product', 
+      flex: 1,
+      valueGetter: (value, row) => row.product ? row.product.name : '-'
+    },
+    { field: 'name', headerName: 'Variant Name', flex: 1 },
+    { field: 'description', headerName: 'Description', flex: 1 },
+    {
+      field: 'actions',
+      headerName: 'Actions',
+      width: 200,
+      renderCell: (params) => (
+        <div className="flex gap-2">
+          <Link href={`/product-variants/${params.row.id}/edit`} className="flex items-center">
+            <Button variant="contained" color="primary" size="small">Edit</Button>
+          </Link>
+          <Button 
+            variant="contained" 
+            color="error" 
+            size="small"
+            onClick={() => handleDelete(params.row.id)}
+          >
+            Delete
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
+  const getData = async () => {
+    setLoading(true);
+    try {
+      const response = await service('product_variants');
+      // callAPI returns full object if keys > 2 (which is the case for variants API), 
+      // or just the data array if keys <= 2. 
+      // Handle both cases to be safe.
+      setRows(response.data.data || response.data);
+    } catch (error) {
+      console.error('Failed to fetch variants', error);
+      Swal.fire('Error', 'Failed to fetch variants', 'error');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: number) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await serviceDestroy('product_variants', id.toString());
+        Swal.fire('Deleted!', 'Variant has been deleted.', 'success');
+        getData();
+      } catch (error) {
+        Swal.fire('Error', 'Failed to delete variant', 'error');
+      }
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  return (
+    <Layout>
+      <div className="flex w-full justify-between items-center my-4">
+        <h1 className="font-bold text-black text-2xl">Product Variants</h1>
+        <Link href="/product-variants/create">
+          <Button variant="contained">ADD VARIANT</Button>
+        </Link>
+      </div>
+      <div style={{ height: 500, width: '100%' }}>
+        <DataGrid 
+          rows={rows} 
+          columns={columns} 
+          loading={loading}
+          getRowId={(row) => row.id}
+        />
+      </div>
+    </Layout>
+  );
+}
