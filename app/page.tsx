@@ -31,7 +31,7 @@ export default function HomePage() {
             Dashboard
           </Typography>
           <Typography variant="h5" color="text.secondary">
-            Selamat datang kembali, <span style={{ fontWeight: 'bold', color: '#333' }}>{userName || 'User'}</span>!
+            Selamat Datang Kembali, <span style={{ fontWeight: 'bold', color: '#333' }}>{userName || 'User'}</span>!
           </Typography>
         </Box>
 
