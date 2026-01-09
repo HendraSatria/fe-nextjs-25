@@ -11,8 +11,10 @@ export default function ProductVariantCreate() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [products, setProducts] = useState<any[]>([]);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const fetchProducts = async () => {
       try {
         const response = await service('products');
@@ -23,6 +25,8 @@ export default function ProductVariantCreate() {
     };
     fetchProducts();
   }, []);
+
+  if (!mounted) return null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

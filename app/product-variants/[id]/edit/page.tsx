@@ -13,8 +13,10 @@ export default function ProductVariantEdit({ params }: { params: Promise<{ id: s
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>(null);
   const [products, setProducts] = useState<any[]>([]);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const fetchInitialData = async () => {
       try {
         const [variantRes, productRes] = await Promise.all([
@@ -30,6 +32,8 @@ export default function ProductVariantEdit({ params }: { params: Promise<{ id: s
     };
     fetchInitialData();
   }, [id, router]);
+
+  if (!mounted) return null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

@@ -11,8 +11,10 @@ export default function ProductCreate() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const fetchCategories = async () => {
       try {
         const response = await service('product_categories');
@@ -23,6 +25,8 @@ export default function ProductCreate() {
     };
     fetchCategories();
   }, []);
+
+  if (!mounted) return null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -47,7 +51,7 @@ export default function ProductCreate() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextField name="name" label="Name" variant="standard" required fullWidth />
           <TextField name="code" label="Code" variant="standard" required fullWidth />
-          <TextField name="price" label="Price" type="number" variant="standard" required fullWidth />
+          <TextField name="price" label="Price" type="number" variant="standard" required fullWidth slotProps={{ htmlInput: { min: 0 } }} />
           
           <FormControl fullWidth variant="standard" required>
             <InputLabel>Category</InputLabel>

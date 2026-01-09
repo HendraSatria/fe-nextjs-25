@@ -13,8 +13,10 @@ export default function ProductEdit({ params }: { params: Promise<{ id: string }
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>(null);
   const [categories, setCategories] = useState<any[]>([]);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const fetchInitialData = async () => {
       try {
         const [productRes, categoryRes] = await Promise.all([
@@ -30,6 +32,8 @@ export default function ProductEdit({ params }: { params: Promise<{ id: string }
     };
     fetchInitialData();
   }, [id, router]);
+
+  if (!mounted) return null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,7 +56,7 @@ export default function ProductEdit({ params }: { params: Promise<{ id: string }
 
   return (
     <Layout>
-      <h1 className="text-black text-2xl font-bold mb-4">Edit Product</h1>
+      <h1 className="text-black text-2xl font-bold mb-4">EDIT PRODUCT</h1>
       <form onSubmit={handleSubmit} className="w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <TextField 
@@ -82,6 +86,7 @@ export default function ProductEdit({ params }: { params: Promise<{ id: string }
             required 
             fullWidth 
             InputLabelProps={{ shrink: true }}
+            slotProps={{ htmlInput: { min: 0 } }}
           />
           
           <FormControl fullWidth variant="standard" required>

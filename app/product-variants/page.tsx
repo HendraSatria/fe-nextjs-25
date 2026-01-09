@@ -14,13 +14,17 @@ export default function ProductVariantList() {
 
   const columns: GridColDef[] = [
     { 
-      field: 'product', 
+      field: 'product_name', 
       headerName: 'Product', 
       flex: 1,
       valueGetter: (value, row) => row.product ? row.product.name : '-'
     },
     { field: 'name', headerName: 'Variant Name', flex: 1 },
+    
     { field: 'description', headerName: 'Description', flex: 1 },
+    
+    
+    
     {
       field: 'actions',
       headerName: 'Actions',
@@ -50,7 +54,8 @@ export default function ProductVariantList() {
       // callAPI returns full object if keys > 2 (which is the case for variants API), 
       // or just the data array if keys <= 2. 
       // Handle both cases to be safe.
-      setRows(response.data.data || response.data);
+      const data = response.data.data || response.data;
+      setRows(Array.isArray(data) ? data : []);
     } catch (error) {
       console.error('Failed to fetch variants', error);
       Swal.fire('Error', 'Failed to fetch variants', 'error');
@@ -90,7 +95,7 @@ export default function ProductVariantList() {
       <div className="flex w-full justify-between items-center my-4">
         <h1 className="font-bold text-black text-2xl">Product Variants</h1>
         <Link href="/product-variants/create">
-          <Button variant="contained">ADD VARIANT</Button>
+          <Button variant="contained">TAMBAH VARIANT</Button>
         </Link>
       </div>
       <div style={{ height: 500, width: '100%' }}>

@@ -94,7 +94,7 @@ const columns: GridColDef[] = [
           <h1 className="font-bold text-black text-2xl">Product Category</h1>
         </div>
         <Link href="/product-category/create">
-        <Button variant="contained">TAMBAH DATA</Button>
+        <Button variant="contained">TAMBAH KATEGORI</Button>
         </Link>
       </div>
       <div style={{ height: 400, width: '100%' }}>

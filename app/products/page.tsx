@@ -15,6 +15,7 @@ export default function ProductList() {
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Name', flex: 1 },
     { field: 'code', headerName: 'Code', flex: 0.5 },
+    {field:'description', headerName:'Description', flex:1},
     { field: 'price', headerName: 'Price', flex: 0.5 },
     { 
       field: 'category', 
@@ -88,7 +89,7 @@ export default function ProductList() {
       <div className="flex w-full justify-between items-center my-4">
         <h1 className="font-bold text-black text-2xl">Products</h1>
         <Link href="/products/create">
-          <Button variant="contained">ADD PRODUCT</Button>
+          <Button variant="contained">TAMBAH PRODUCT</Button>
         </Link>
       </div>
       <div style={{ height: 500, width: '100%' }}>

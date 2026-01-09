@@ -12,8 +12,10 @@ export default function ProductCategoryEdit({ params }: { params: Promise<{ id: 
   const { id } = use(params);
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState<any>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const fetchData = async () => {
         try {
             const response = await serviceShow('product_categories', id);
@@ -29,6 +31,8 @@ export default function ProductCategoryEdit({ params }: { params: Promise<{ id: 
     }
     fetchData();
   }, [id, router]);
+
+  if (!mounted) return null;
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
