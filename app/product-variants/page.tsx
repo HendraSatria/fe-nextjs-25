@@ -2,7 +2,8 @@
 
 import Layout from '@/components/ui/Layout';
 import { service, serviceDestroy } from '@/services/services';
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
+import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -31,17 +32,18 @@ export default function ProductVariantList() {
       width: 200,
       renderCell: (params) => (
         <div className="flex gap-2">
-          <Link href={`/product-variants/${params.row.id}/edit`} className="flex items-center">
-            <Button variant="contained" color="primary" size="small">Edit</Button>
+          <Link href={`/product-variants/${params.row.id}/edit`}>
+            <IconButton size="small" title="Edit">
+              <EditIcon fontSize="small" sx={{ color: 'gray' }} />
+            </IconButton>
           </Link>
-          <Button 
-            variant="contained" 
-            color="error" 
+          <IconButton 
             size="small"
             onClick={() => handleDelete(params.row.id)}
+            title="Delete"
           >
-            Delete
-          </Button>
+            <DeleteIcon fontSize="small" color="error" />
+          </IconButton>
         </div>
       ),
     },

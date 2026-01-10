@@ -3,7 +3,9 @@ import React, { useEffect } from "react";
 import Button from "@/components/ui/Button";
 import Layout from "@/components/ui/Layout";
 import { service, serviceDestroy } from "@/services/services";
-import { DataGrid ,GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
+import { IconButton } from '@mui/material';
+import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import Link from "next/link";
 import Swal from 'sweetalert2';
 
@@ -32,17 +34,18 @@ const columns: GridColDef[] = [
         width: 200,
         renderCell: (params) => (
           <div className="flex gap-2">
-            <Link href={`/product-category/${params.row.id}/edit`} className="flex items-center">
-              <Button variant="contained" color="primary" size="small">Edit</Button>
+            <Link href={`/product-category/${params.row.id}/edit`}>
+              <IconButton size="small" title="Edit">
+                <EditIcon fontSize="small" sx={{ color: 'gray' }} />
+              </IconButton>
             </Link>
-            <Button 
-              variant="contained" 
-              color="error" 
+            <IconButton 
               size="small"
               onClick={() => handleDelete(params.row.id)}
+              title="Delete"
             >
-              Delete
-            </Button>
+              <DeleteIcon fontSize="small" color="error" />
+            </IconButton>
           </div>
         ),
       },

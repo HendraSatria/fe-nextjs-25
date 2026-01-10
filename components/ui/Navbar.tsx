@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Cookies from "js-cookie";
 import { useRouter, usePathname } from "next/navigation";
-import { serviceDestroy, serviceStore } from "@/services/services";
+import { serviceStore } from "@/services/services";
 import Swal from "sweetalert2";
-import { Button } from "@mui/material";
+import { Button, Avatar, Menu, MenuItem, Tooltip, IconButton, Box } from "@mui/material";
 
 export default function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState<{ name: string } | null>(null);
+  const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -20,6 +21,14 @@ export default function Navbar() {
       setUserData(JSON.parse(user));
     }
   }, []);
+
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   const handleLogout = async () => {
     const result = await Swal.fire({
@@ -34,7 +43,6 @@ export default function Navbar() {
 
     if (result.isConfirmed) {
       try {
-        // Logout is a POST request in Laravel setup
         await serviceStore('auth/logout', new FormData()); 
         Cookies.remove('token');
         Cookies.remove('user');
@@ -52,7 +60,6 @@ export default function Navbar() {
         router.push('/login');
         router.refresh();
       } catch (error) {
-        // Even if API fails, clear local session
         Cookies.remove('token');
         Cookies.remove('user');
         setIsLoggedIn(false);
@@ -63,7 +70,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: 'Home', href: '/' },
-    { name: 'Product-Category', href: '/product-category' },
+    { name: 'Product Category', href: '/product-category' },
     { name: 'Products', href: '/products' },
     { name: 'Product Variants', href: '/product-variants' },
   ];
@@ -106,27 +113,51 @@ export default function Navbar() {
           
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 gap-3">
             {isLoggedIn ? (
-              <>
-                <span className="text-gray-300 text-sm hidden md:block">
-                  Halo, <span className="text-white font-bold">{userData?.name}</span>
-                </span>
-                <Button 
-                  onClick={handleLogout}
-                  variant="outlined" 
-                  color="inherit" 
-                  size="small"
-                  sx={{ color: 'white', borderColor: 'gray' }}
+              <Box sx={{ flexGrow: 0 }}>
+                <Tooltip title="Open settings">
+                  <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                    <Avatar sx={{ bgcolor: 'gray' }}>
+                      {userData?.name ? userData.name.charAt(0).toUpperCase() : 'U'}
+                    </Avatar>
+                  </IconButton>
+                </Tooltip>
+                <Menu
+                  sx={{ mt: '45px' }}
+                  id="menu-appbar"
+                  anchorEl={anchorElUser}
+                  anchorOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                  }}
+                  open={Boolean(anchorElUser)}
+                  onClose={handleCloseUserMenu}
                 >
-                  Logout
-                </Button>
-              </>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <p className="text-sm">Profile</p>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <p className="text-sm">Account</p>
+                  </MenuItem>
+                  <MenuItem onClick={handleCloseUserMenu}>
+                    <p className="text-sm">Dashboard</p>
+                  </MenuItem>
+                  <MenuItem onClick={() => { handleCloseUserMenu(); handleLogout(); }}>
+                    <p className="text-sm text-red-600">Logout</p>
+                  </MenuItem>
+                </Menu>
+              </Box>
             ) : (
               <>
                 <Link href="/login">
-                  <Button variant="text" sx={{ color: 'white' }}>Login</Button>
+                  <Button variant="text" sx={{ color: 'white', fontWeight: 'bold' }}>LOGIN</Button>
                 </Link>
                 <Link href="/register">
-                  <Button variant="contained" color="primary" size="small">Register</Button>
+                  <Button variant="contained" color="primary" sx={{ borderRadius: '8px', fontWeight: 'bold' }}>REGISTER</Button>
                 </Link>
               </>
             )}
