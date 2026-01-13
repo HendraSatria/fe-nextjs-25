@@ -5,21 +5,13 @@ import Layout from "@/components/ui/Layout";
 import { service, serviceDestroy } from "@/services/services";
 import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 import { IconButton } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Edit as EditIcon, Delete as DeleteIcon, Refresh as RefreshIcon } from '@mui/icons-material';
 import Link from "next/link";
 import Swal from 'sweetalert2';
+import AuthGuard from '@/components/AuthGuard';
 
 
-const rows: GridRowsProp = [
-  { id: 1, name: 'Data Grid', description: 'the Community version' },
-  { id: 2, name: 'Data Grid Pro', description: 'the Pro version' },
-  { id: 3, name: 'Data Grid Premium', description: 'the Premium version' },
-];
 
-const columns: GridColDef[] = [
-  { field: 'name', headerName: 'Product Name', width: 200 },
-  { field: 'description', headerName: 'Description', width: 300 },
-];
   export default function Page() {
     const [rows, setRows] = React.useState<GridRowsProp>([]);
     const [loading, setLoading] = React.useState(true);
@@ -91,23 +83,35 @@ const columns: GridColDef[] = [
 
 
   return (
-    <Layout>
-      <div className="flex w-full justify-between items-center my-4">
-        <div className="flex items-center gap-2">
-          <h1 className="font-bold text-black text-2xl">Product Category</h1>
+    <AuthGuard>
+      <Layout>
+        <div className="flex w-full justify-between items-center my-4">
+          <div className="flex items-center gap-2">
+            <h1 className="font-bold text-black text-2xl">Product Category</h1>
+          </div>
+          <Link href="/product-category/create">
+          <Button variant="contained">TAMBAH KATEGORI</Button>
+          </Link>
+          
         </div>
-        <Link href="/product-category/create">
-        <Button variant="contained">TAMBAH KATEGORI</Button>
-        </Link>
-      </div>
-      <div style={{ height: 400, width: '100%' }}>
-        <DataGrid 
-            rows={rows} 
-            columns={columns} 
-            loading={loading}
-            getRowId={(row) => row.id}
-        />
-      </div>
-    </Layout>
+         <IconButton
+            onClick={getData}
+            disabled={loading}
+            aria-label="refresh"
+          >
+            <RefreshIcon />
+          </IconButton>  
+        <div style={{ height: 400, width: '100%' }}>
+             
+          <DataGrid 
+          
+              rows={rows} 
+              columns={columns} 
+              loading={loading}
+              getRowId={(row) => row.id}
+          />
+        </div>
+      </Layout>
+    </AuthGuard>
   );
 }

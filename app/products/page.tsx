@@ -8,6 +8,7 @@ import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
+import AuthGuard from '@/components/AuthGuard';
 
 export default function ProductList() {
   const [rows, setRows] = useState<GridRowsProp>([]);
@@ -87,21 +88,23 @@ export default function ProductList() {
   }, []);
 
   return (
-    <Layout>
-      <div className="flex w-full justify-between items-center my-4">
-        <h1 className="font-bold text-black text-2xl">Products</h1>
-        <Link href="/products/create">
-          <Button variant="contained">TAMBAH PRODUCT</Button>
-        </Link>
-      </div>
-      <div style={{ height: 500, width: '100%' }}>
-        <DataGrid 
-          rows={rows} 
-          columns={columns} 
-          loading={loading}
-          getRowId={(row) => row.id}
-        />
-      </div>
-    </Layout>
+    <AuthGuard>
+      <Layout>
+        <div className="flex w-full justify-between items-center my-4">
+          <h1 className="font-bold text-black text-2xl">Products</h1>
+          <Link href="/products/create">
+            <Button variant="contained">TAMBAH PRODUCT</Button>
+          </Link>
+        </div>
+        <div style={{ height: 500, width: '100%' }}>
+          <DataGrid 
+            rows={rows} 
+            columns={columns} 
+            loading={loading}
+            getRowId={(row) => row.id}
+          />
+        </div>
+      </Layout>
+    </AuthGuard>
   );
 }

@@ -6,21 +6,13 @@ import { serviceStore } from "@/services/services";
 import Swal from "sweetalert2";
 import { Button, Avatar, Menu, MenuItem, Tooltip, IconButton, Box } from "@mui/material";
 
+import { useAuth } from "@/context/AuthContext";
+
 export default function Navbar() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userData, setUserData] = useState<{ name: string } | null>(null);
+  const { user, logout, isAuthenticated } = useAuth();
   const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null);
   const router = useRouter();
   const pathname = usePathname();
-
-  useEffect(() => {
-    const token = Cookies.get('token');
-    const user = Cookies.get('user');
-    if (token && user) {
-      setIsLoggedIn(true);
-      setUserData(JSON.parse(user));
-    }
-  }, []);
 
   const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElUser(event.currentTarget);
@@ -42,29 +34,14 @@ export default function Navbar() {
     });
 
     if (result.isConfirmed) {
-      try {
-        await serviceStore('auth/logout', new FormData()); 
-        Cookies.remove('token');
-        Cookies.remove('user');
-        setIsLoggedIn(false);
-        setUserData(null);
-        
-        Swal.fire({
-          icon: 'success',
-          title: 'Logged Out',
-          text: 'Sampai jumpa lagi!',
-          timer: 1500,
-          showConfirmButton: false
-        });
-        
-        router.push('/login');
-        router.refresh();
-      } catch (error) {
-        Cookies.remove('token');
-        Cookies.remove('user');
-        setIsLoggedIn(false);
-        router.push('/login');
-      }
+      await logout();
+      Swal.fire({
+        icon: 'success',
+        title: 'Logged Out',
+        text: 'Sampai jumpa lagi!',
+        timer: 1500,
+        showConfirmButton: false
+      });
     }
   };
 
@@ -112,12 +89,12 @@ export default function Navbar() {
           </div>
           
           <div className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 gap-3">
-            {isLoggedIn ? (
+            {isAuthenticated && user ? (
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
                   <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                     <Avatar sx={{ bgcolor: 'gray' }}>
-                      {userData?.name ? userData.name.charAt(0).toUpperCase() : 'U'}
+                      {user.name ? user.name.charAt(0).toUpperCase() : 'U'}
                     </Avatar>
                   </IconButton>
                 </Tooltip>
@@ -153,10 +130,10 @@ export default function Navbar() {
               </Box>
             ) : (
               <>
-                <Link href="/login">
+                <Link href="/auth/login">
                   <Button variant="text" sx={{ color: 'white', fontWeight: 'bold' }}>LOGIN</Button>
                 </Link>
-                <Link href="/register">
+                <Link href="/auth/register">
                   <Button variant="contained" color="primary" sx={{ borderRadius: '8px', fontWeight: 'bold' }}>REGISTER</Button>
                 </Link>
               </>
