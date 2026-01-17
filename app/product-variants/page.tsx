@@ -3,7 +3,7 @@
 import Layout from '@/components/ui/Layout';
 import { service, serviceDestroy } from '@/services/services';
 import { Button, IconButton } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Edit as EditIcon, Delete as DeleteIcon, Refresh as RefreshIcon } from '@mui/icons-material';
 import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
@@ -95,14 +95,23 @@ export default function ProductVariantList() {
 
   return (
     <AuthGuard>
-      <Layout>
+      <Layout>  
         <div className="flex w-full justify-between items-center my-4">
           <h1 className="font-bold text-black text-2xl">Product Variants</h1>
           <Link href="/product-variants/create">
             <Button variant="contained">TAMBAH VARIANT</Button>
           </Link>
         </div>
-        <div style={{ height: 500, width: '100%' }}>
+        <div style={{ height: 400, width: '100%' }}>
+          <div className="flex justify-end mb-2">
+                     <IconButton
+                      onClick={getData}
+                      disabled={loading}
+                      aria-label="refresh"
+                    >
+                      <RefreshIcon />
+                    </IconButton> 
+                    </div>   
           <DataGrid 
             rows={rows} 
             columns={columns} 

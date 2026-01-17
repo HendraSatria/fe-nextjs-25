@@ -94,15 +94,17 @@ import AuthGuard from '@/components/AuthGuard';
           </Link>
           
         </div>
-         <IconButton
+         
+        <div style={{ height: 400, width: '100%' }}>
+          <div className="flex justify-end mb-2">
+           <IconButton
             onClick={getData}
             disabled={loading}
             aria-label="refresh"
           >
             <RefreshIcon />
-          </IconButton>  
-        <div style={{ height: 400, width: '100%' }}>
-             
+          </IconButton> 
+          </div>   
           <DataGrid 
           
               rows={rows} 
@@ -114,4 +116,5 @@ import AuthGuard from '@/components/AuthGuard';
       </Layout>
     </AuthGuard>
   );
+  
 }

@@ -3,6 +3,7 @@
 import Layout from '@/components/ui/Layout';
 import { service, serviceDestroy } from '@/services/services';
 import { Button, IconButton } from '@mui/material';
+import { Refresh as RefreshIcon } from '@mui/icons-material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import { DataGrid, GridColDef, GridRowsProp } from '@mui/x-data-grid';
 import Link from 'next/link';
@@ -97,6 +98,15 @@ export default function ProductList() {
           </Link>
         </div>
         <div style={{ height: 500, width: '100%' }}>
+          <div className="flex justify-end mb-2">
+                     <IconButton
+                      onClick={getData}
+                      disabled={loading}
+                      aria-label="refresh"
+                    >
+                      <RefreshIcon />
+                    </IconButton> 
+                    </div>   
           <DataGrid 
             rows={rows} 
             columns={columns} 
